@@ -1,17 +1,14 @@
 {
   "domain": "ista_vdm",
   "name": "Ista VDM",
-  "codeowners": [
-    "@BeniKing99"
-  ],
+  "codeowners": ["@BeniKing99"],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/BeniKing99/ista-vdm-hacs",
   "integration_type": "device",
   "iot_class": "cloud_polling",
-  "requirements": [
-    "ista-vdm-api==1.0.1"
-  ],
+  "requirements": ["ista-vdm-api>=1.0.1"],
+  "version": "1.0.0",
   "quality_scale": {
     "bronze": [
       "action-setup",
