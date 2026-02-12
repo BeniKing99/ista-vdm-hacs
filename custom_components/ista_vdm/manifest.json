@@ -1,0 +1,77 @@
+{
+  "domain": "ista_vdm",
+  "name": "Ista VDM",
+  "codeowners": [
+    "@BeniKing99"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/BeniKing99/ista-vdm-hacs",
+  "integration_type": "device",
+  "iot_class": "cloud_polling",
+  "requirements": [
+    "ista-vdm-api==1.0.1"
+  ],
+  "quality_scale": {
+    "bronze": [
+      "action-setup",
+      "appropriate-polling",
+      "brands",
+      "common-modules",
+      "config-flow-test-coverage",
+      "config-flow",
+      "dependency-transparency",
+      "docs-actions",
+      "docs-high-level-description",
+      "docs-installation-instructions",
+      "docs-removal-instructions",
+      "entity-event-setup",
+      "entity-unique-id",
+      "has-entity-name",
+      "runtime-data",
+      "test-before-configure",
+      "test-before-setup",
+      "unique-config-entry"
+    ],
+    "silver": [
+      "action-exceptions",
+      "config-entry-unloading",
+      "docs-configuration-parameters",
+      "docs-installation-parameters",
+      "entity-unavailable",
+      "integration-owner",
+      "log-when-unavailable",
+      "parallel-updates",
+      "reauthentication-flow",
+      "test-coverage"
+    ],
+    "gold": [
+      "devices",
+      "diagnostics",
+      "discovery-update-info",
+      "discovery",
+      "docs-data-update",
+      "docs-examples",
+      "docs-known-limitations",
+      "docs-supported-devices",
+      "docs-supported-functions",
+      "docs-troubleshooting",
+      "docs-use-cases",
+      "dynamic-devices",
+      "entity-category",
+      "entity-device-class",
+      "entity-disabled-by-default",
+      "entity-translations",
+      "exception-translations",
+      "icon-translations",
+      "reconfiguration-flow",
+      "repair-issues",
+      "stale-devices"
+    ],
+    "platinum": [
+      "async-dependency",
+      "inject-websession",
+      "strict-typing"
+    ]
+  }
+}

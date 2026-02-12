@@ -1,0 +1,54 @@
+{
+  "title": "Ista VDM",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Mit Ista VDM verbinden",
+        "description": "Geben Sie Ihre Ista VDM Portal-Anmeldedaten ein",
+        "data": {
+          "email": "E-Mail",
+          "password": "Passwort"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbindung fehlgeschlagen, bitte versuchen Sie es erneut",
+      "invalid_auth": "Ungültige Anmeldedaten",
+      "unknown": "Unerwarteter Fehler"
+    },
+    "abort": {
+      "already_configured": "Konto ist bereits konfiguriert"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "heating_consumption": {
+        "name": "Heizungsverbrauch"
+      },
+      "hot_water_consumption": {
+        "name": "Warmwasserverbrauch"
+      },
+      "flat_city": {
+        "name": "Stadt"
+      },
+      "flat_street": {
+        "name": "Straße"
+      },
+      "flat_housenumber": {
+        "name": "Hausnummer"
+      },
+      "flat_door": {
+        "name": "Tür"
+      },
+      "flat_squaremeter": {
+        "name": "Quadratmeter"
+      },
+      "flat_postalcode": {
+        "name": "Postleitzahl"
+      },
+      "last_updated": {
+        "name": "Zuletzt aktualisiert"
+      }
+    }
+  }
+}

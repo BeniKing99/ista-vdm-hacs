@@ -1,0 +1,164 @@
+rules:
+  # Bronze tier - All required
+  action-setup:
+    status: todo
+    comment: No service actions registered
+  appropriate-polling:
+    status: done
+    comment: Updates once per day (24 hours)
+  brands:
+    status: done
+    comment: Icon included (icon.svg)
+  common-modules:
+    status: done
+    comment: API separated into api.py
+  config-flow-test-coverage:
+    status: done
+    comment: Full test coverage in tests/test_config_flow.py
+  config-flow:
+    status: done
+    comment: Full config flow with UI setup
+  dependency-transparency:
+    status: done
+    comment: Dependencies listed in manifest.json
+  docs-actions:
+    status: todo
+    comment: No service actions
+  docs-high-level-description:
+    status: done
+    comment: Comprehensive README.md
+  docs-installation-instructions:
+    status: done
+    comment: Step-by-step installation in README
+  docs-removal-instructions:
+    status: done
+    comment: Removal instructions in README
+  entity-event-setup:
+    status: done
+    comment: Proper lifecycle management
+  entity-unique-id:
+    status: done
+    comment: All entities have unique_id
+  has-entity-name:
+    status: done
+    comment: All entities use has_entity_name = True
+  runtime-data:
+    status: done
+    comment: Using ConfigEntry.runtime_data with typed API
+  test-before-configure:
+    status: done
+    comment: Authentication tested in config flow
+  test-before-setup:
+    status: done
+    comment: API connection tested during setup
+  unique-config-entry:
+    status: done
+    comment: Duplicate entry prevention implemented
+
+  # Silver tier
+  action-exceptions:
+    status: todo
+    comment: No service actions
+  config-entry-unloading:
+    status: done
+    comment: Proper unload support
+  docs-configuration-parameters:
+    status: done
+    comment: All parameters documented
+  docs-installation-parameters:
+    status: done
+    comment: Installation parameters documented
+  entity-unavailable:
+    status: done
+    comment: UpdateFailed handling implemented
+  integration-owner:
+    status: todo
+    comment: Add codeowner to manifest
+  log-when-unavailable:
+    status: done
+    comment: Proper logging implemented
+  parallel-updates:
+    status: done
+    comment: PARALLEL_UPDATES = 0
+  reauthentication-flow:
+    status: done
+    comment: Reauth flow implemented
+  test-coverage:
+    status: done
+    comment: Tests in tests/ directory
+
+  # Gold tier
+  devices:
+    status: done
+    comment: DeviceInfo with proper metadata
+  diagnostics:
+    status: done
+    comment: diagnostics.py implemented
+  discovery-update-info:
+    status: todo
+    comment: Not applicable - no discovery
+  discovery:
+    status: todo
+    comment: Not applicable - config flow only
+  docs-data-update:
+    status: done
+    comment: Data update process documented
+  docs-examples:
+    status: done
+    comment: Automation examples in README
+  docs-known-limitations:
+    status: done
+    comment: Limitations section in README
+  docs-supported-devices:
+    status: done
+    comment: Supported devices documented
+  docs-supported-functions:
+    status: done
+    comment: All functions documented
+  docs-troubleshooting:
+    status: done
+    comment: Troubleshooting section in README
+  docs-use-cases:
+    status: done
+    comment: Use cases documented
+  dynamic-devices:
+    status: todo
+    comment: Not applicable - single device
+  entity-category:
+    status: done
+    comment: Diagnostic category for flat info
+  entity-device-class:
+    status: done
+    comment: Proper device classes used
+  entity-disabled-by-default:
+    status: todo
+    comment: Consider for noisy sensors
+  entity-translations:
+    status: done
+    comment: Translation keys in translations/
+  exception-translations:
+    status: todo
+    comment: Use HomeAssistantError subclasses
+  icon-translations:
+    status: todo
+    comment: Icons defined in entity descriptions
+  reconfiguration-flow:
+    status: todo
+    comment: Consider adding reconfigure flow
+  repair-issues:
+    status: todo
+    comment: Consider adding repair issues
+  stale-devices:
+    status: todo
+    comment: Not applicable - single device
+
+  # Platinum tier
+  async-dependency:
+    status: done
+    comment: All dependencies are async
+  inject-websession:
+    status: todo
+    comment: Will be handled in PyPI library
+  strict-typing:
+    status: done
+    comment: Full type hints + py.typed

@@ -1,0 +1,54 @@
+{
+  "title": "Ista VDM",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Conectar con Ista VDM",
+        "description": "Introduzca sus credenciales del portal Ista VDM",
+        "data": {
+          "email": "Correo electrónico",
+          "password": "Contraseña"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Error de conexión, inténtelo de nuevo",
+      "invalid_auth": "Autenticación inválida",
+      "unknown": "Error inesperado"
+    },
+    "abort": {
+      "already_configured": "La cuenta ya está configurada"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "heating_consumption": {
+        "name": "Consumo de calefacción"
+      },
+      "hot_water_consumption": {
+        "name": "Consumo de agua caliente"
+      },
+      "flat_city": {
+        "name": "Ciudad"
+      },
+      "flat_street": {
+        "name": "Calle"
+      },
+      "flat_housenumber": {
+        "name": "Número"
+      },
+      "flat_door": {
+        "name": "Puerta"
+      },
+      "flat_squaremeter": {
+        "name": "Metros cuadrados"
+      },
+      "flat_postalcode": {
+        "name": "Código postal"
+      },
+      "last_updated": {
+        "name": "Última actualización"
+      }
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "title": "Ista VDM",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Ista VDM",
+        "description": "Enter your Ista VDM portal credentials",
+        "data": {
+          "email": "Email",
+          "password": "Password"
+        },
+        "data_description": {
+          "email": "The email address you use to log in to the ista VDM portal",
+          "password": "Your ista VDM portal password"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reauthenticate with Ista VDM",
+        "description": "The integration needs to re-authenticate with your account ({email}). Please enter your password.",
+        "data": {
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect, please try again",
+      "invalid_auth": "Invalid authentication",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "Account is already configured",
+      "reauth_successful": "Re-authentication was successful",
+      "reauth_failed": "Re-authentication failed"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "heating_consumption": {
+        "name": "Heating Consumption"
+      },
+      "hot_water_consumption": {
+        "name": "Hot Water Consumption"
+      },
+      "flat_city": {
+        "name": "City"
+      },
+      "flat_street": {
+        "name": "Street"
+      },
+      "flat_housenumber": {
+        "name": "House Number"
+      },
+      "flat_door": {
+        "name": "Door"
+      },
+      "flat_squaremeter": {
+        "name": "Square Meters"
+      },
+      "flat_postalcode": {
+        "name": "Postal Code"
+      },
+      "last_updated": {
+        "name": "Last Updated"
+      }
+    }
+  }
+}
