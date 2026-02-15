@@ -8,6 +8,7 @@ from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.ista_vdm.const import DOMAIN
+from ista_vdm_api import IstaVdmAuthError
 
 
 async def test_setup_entry(hass: HomeAssistant) -> None:
@@ -39,7 +40,7 @@ async def test_setup_entry(hass: HomeAssistant) -> None:
 
 
 async def test_setup_entry_auth_failure(hass: HomeAssistant) -> None:
-    """Test setup fails on authentication error."""
+    """Test setup triggers re-authentication on IstaVdmAuthError."""
     entry = MockConfigEntry(
         domain=DOMAIN,
         data={
@@ -52,12 +53,65 @@ async def test_setup_entry_auth_failure(hass: HomeAssistant) -> None:
     
     with patch(
         "custom_components.ista_vdm.IstaVdmAPI.authenticate",
-        side_effect=Exception("Auth failed"),
-    ):
-        await hass.config_entries.async_setup(entry.entry_id)
+        side_effect=IstaVdmAuthError("Invalid credentials"),
+    ) as mock_auth:
+        result = await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
         
-        assert entry.state == ConfigEntryState.SETUP_RETRY
+        assert result is False
+        mock_auth.assert_called_once()
+
+
+async def test_setup_entry_auth_failure_triggers_reauth(hass: HomeAssistant) -> None:
+    """Test that auth failure triggers the re-authentication flow."""
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        data={
+            "email": "test@example.com",
+            "password": "wrong_password",
+        },
+        unique_id="test@example.com",
+    )
+    entry.add_to_hass(hass)
+    
+    with patch(
+        "custom_components.ista_vdm.IstaVdmAPI.authenticate",
+        side_effect=IstaVdmAuthError("Invalid credentials"),
+    ):
+        with patch.object(
+            entry, "async_start_reauth", return_value=None
+        ) as mock_reauth:
+            result = await hass.config_entries.async_setup(entry.entry_id)
+            await hass.async_block_till_done()
+            
+            assert result is False
+            mock_reauth.assert_called_once_with(hass)
+
+
+async def test_setup_entry_unexpected_error_triggers_reauth(hass: HomeAssistant) -> None:
+    """Test that unexpected errors also trigger re-authentication flow."""
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        data={
+            "email": "test@example.com",
+            "password": "password",
+        },
+        unique_id="test@example.com",
+    )
+    entry.add_to_hass(hass)
+    
+    with patch(
+        "custom_components.ista_vdm.IstaVdmAPI.authenticate",
+        side_effect=Exception("Unexpected network error"),
+    ):
+        with patch.object(
+            entry, "async_start_reauth", return_value=None
+        ) as mock_reauth:
+            result = await hass.config_entries.async_setup(entry.entry_id)
+            await hass.async_block_till_done()
+            
+            assert result is False
+            mock_reauth.assert_called_once_with(hass)
 
 
 async def test_unload_entry(hass: HomeAssistant) -> None:
