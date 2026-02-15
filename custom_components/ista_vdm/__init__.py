@@ -2,12 +2,16 @@
 
 from __future__ import annotations
 
+import logging
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 
-from ista_vdm_api import IstaVdmAPI
+from ista_vdm_api import IstaVdmAPI, IstaVdmAuthError
 from .const import DOMAIN
+
+_LOGGER = logging.getLogger(__name__)
 
 PLATFORMS: list[Platform] = [Platform.SENSOR]
 
@@ -22,10 +26,24 @@ async def async_setup_entry(hass: HomeAssistant, entry: IstaVdmConfigEntry) -> b
     # Test the connection during setup
     try:
         await api.authenticate()
+    except IstaVdmAuthError as err:
+        # If auth fails, trigger re-authentication flow
+        _LOGGER.error(
+            "Authentication failed for %s: %s. Triggering re-authentication.",
+            entry.title,
+            err
+        )
+        entry.async_start_reauth(hass)
+        return False
     except Exception as err:
-        # If auth fails, we should not set up the entry
-        # The config flow should catch this, but just in case
-        raise err
+        # For other errors, log and still try to set up
+        _LOGGER.error(
+            "Unexpected error during authentication for %s: %s",
+            entry.title,
+            err
+        )
+        entry.async_start_reauth(hass)
+        return False
     
     entry.runtime_data = api
     
