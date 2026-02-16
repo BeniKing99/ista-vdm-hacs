@@ -5,15 +5,12 @@ from __future__ import annotations
 import logging
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 
 from ista_vdm_api import IstaVdmAPI, IstaVdmAuthError
-from .const import DOMAIN
+from .const import DOMAIN, PLATFORMS
 
 _LOGGER = logging.getLogger(__name__)
-
-PLATFORMS: list[Platform] = [Platform.SENSOR]
 
 
 type IstaVdmConfigEntry = ConfigEntry[IstaVdmAPI]
@@ -54,6 +51,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: IstaVdmConfigEntry) -> b
 
 async def async_unload_entry(hass: HomeAssistant, entry: IstaVdmConfigEntry) -> bool:
     """Unload a config entry."""
+    # Clean up coordinator from hass.data
+    hass.data.get(DOMAIN, {}).pop(entry.entry_id, None)
+    
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
 

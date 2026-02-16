@@ -3,7 +3,7 @@
 from homeassistant.const import Platform
 
 DOMAIN = "ista_vdm"
-PLATFORMS: list[Platform] = [Platform.SENSOR]
+PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.BUTTON]
 
 # Configuration keys
 CONF_EMAIL = "email"

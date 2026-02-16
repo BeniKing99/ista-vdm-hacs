@@ -81,6 +81,9 @@ async def async_setup_entry(
     
     coordinator = IstaVdmDataUpdateCoordinator(hass, api)
     
+    # Store coordinator in hass.data for access by other platforms
+    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
+    
     # Fetch initial data
     await coordinator.async_config_entry_first_refresh()
     
@@ -91,6 +94,7 @@ async def async_setup_entry(
     entities: list[IstaVdmBaseSensor] = [
         IstaVdmHeatingSensor(coordinator, entry, device_info),
         IstaVdmHotWaterSensor(coordinator, entry, device_info),
+        IstaVdmLastUpdatedSensor(coordinator, entry, device_info),
     ]
     
     # Add flat detail sensors (static info)
@@ -155,6 +159,33 @@ class IstaVdmBaseSensor(CoordinatorEntity[IstaVdmDataUpdateCoordinator], SensorE
         super().__init__(coordinator)
         self._entry = entry
         self._attr_device_info = device_info
+
+
+class IstaVdmLastUpdatedSensor(IstaVdmBaseSensor):
+    """Sensor for last updated timestamp."""
+
+    entity_description = SensorEntityDescription(
+        key="last_updated",
+        name="Last Updated",
+        device_class=SensorDeviceClass.TIMESTAMP,
+        icon="mdi:clock-outline",
+        entity_category=EntityCategory.DIAGNOSTIC,
+    )
+
+    def __init__(
+        self,
+        coordinator: IstaVdmDataUpdateCoordinator,
+        entry: ConfigEntry,
+        device_info: DeviceInfo,
+    ) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator, entry, device_info)
+        self._attr_unique_id = f"{entry.entry_id}_last_updated"
+
+    @property
+    def native_value(self) -> datetime | None:
+        """Return the last update timestamp."""
+        return self.coordinator.last_update_success_time
 
 
 class IstaVdmHeatingSensor(IstaVdmBaseSensor):
