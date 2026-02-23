@@ -63,5 +63,5 @@ class IstaVdmRefreshButton(ButtonEntity):
 
     async def async_press(self) -> None:
         """Handle the button press."""
-        _LOGGER.debug("Manual refresh triggered for %s", self._entry.entry_id)
-        await self._coordinator.async_refresh()
+        _LOGGER.info("Manual refresh triggered for %s", self._entry.title)
+        await self._coordinator.async_request_refresh()

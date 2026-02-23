@@ -15,6 +15,7 @@ from homeassistant.components.sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfEnergy, UnitOfVolume
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.entity import DeviceInfo, EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import (
@@ -58,17 +59,34 @@ class IstaVdmDataUpdateCoordinator(DataUpdateCoordinator[list[ConsumptionData]])
 
     async def _async_update_data(self) -> list[ConsumptionData]:
         """Fetch data from ista VDM API."""
+        _LOGGER.debug("Starting data update for %s", self.entry.title)
         try:
             async with self.api:
                 if not self.api.is_authenticated:
+                    _LOGGER.debug("API not authenticated, authenticating...")
                     await self.api.authenticate()
                 
                 # Get flat info for static sensors (only once)
                 if self.flat_info is None:
+                    _LOGGER.debug("Fetching flat info...")
                     self.flat_info = await self.api.get_flat_info()
+                    _LOGGER.debug("Flat info retrieved: %s", self.flat_info)
                 
                 # Get all consumption data
+                _LOGGER.debug("Fetching consumption data...")
                 data = await self.api.get_consumption_data()
+                _LOGGER.debug("Retrieved %d consumption records", len(data))
+                
+                # Log the latest data for debugging
+                if data:
+                    latest = max(data, key=lambda x: x.period_end)
+                    _LOGGER.debug(
+                        "Latest data: period=%s to %s, heating=%s kWh, hot_water=%s m³",
+                        latest.period_start,
+                        latest.period_end,
+                        latest.heating_consumption,
+                        latest.hot_water_consumption
+                    )
                 
                 # Update last success time
                 self.last_update_success_time = dt_util.utcnow()
@@ -76,16 +94,18 @@ class IstaVdmDataUpdateCoordinator(DataUpdateCoordinator[list[ConsumptionData]])
                 return data
                 
         except IstaVdmAuthError as err:
-            # Auth failed - trigger re-authentication flow
             _LOGGER.error(
-                "Authentication failed for %s during update: %s. Triggering re-authentication.",
+                "Authentication failed for %s: %s. Triggering re-authentication.",
                 self.entry.title,
                 err
             )
-            self.entry.async_start_reauth(self.hass)
-            raise UpdateFailed(f"Authentication failed: {err}") from err
+            raise ConfigEntryAuthFailed from err
         except IstaVdmError as err:
+            _LOGGER.error("Ista VDM error for %s: %s", self.entry.title, err)
             raise UpdateFailed(f"Error communicating with API: {err}") from err
+        except Exception as err:
+            _LOGGER.exception("Unexpected error updating data for %s: %s", self.entry.title, err)
+            raise UpdateFailed(f"Unexpected error: {err}") from err
 
 
 async def async_setup_entry(
