@@ -24,7 +24,7 @@ from homeassistant.helpers.update_coordinator import (
 )
 from homeassistant.util import dt as dt_util
 
-from ista_vdm_api import ConsumptionData, IstaVdmAPI, IstaVdmError
+from ista_vdm_api import ConsumptionData, IstaVdmAPI, IstaVdmAuthError, IstaVdmError
 
 from . import IstaVdmConfigEntry
 from .const import DOMAIN, PLATFORMS, UPDATE_INTERVAL
@@ -42,6 +42,7 @@ class IstaVdmDataUpdateCoordinator(DataUpdateCoordinator[list[ConsumptionData]])
         self,
         hass: HomeAssistant,
         api: IstaVdmAPI,
+        entry: ConfigEntry,
     ) -> None:
         """Initialize the coordinator."""
         super().__init__(
@@ -51,7 +52,9 @@ class IstaVdmDataUpdateCoordinator(DataUpdateCoordinator[list[ConsumptionData]])
             update_interval=timedelta(seconds=UPDATE_INTERVAL),
         )
         self.api = api
+        self.entry = entry
         self.flat_info: dict[str, Any] | None = None
+        self.last_update_success_time: datetime | None = None
 
     async def _async_update_data(self) -> list[ConsumptionData]:
         """Fetch data from ista VDM API."""
@@ -65,8 +68,22 @@ class IstaVdmDataUpdateCoordinator(DataUpdateCoordinator[list[ConsumptionData]])
                     self.flat_info = await self.api.get_flat_info()
                 
                 # Get all consumption data
-                return await self.api.get_consumption_data()
+                data = await self.api.get_consumption_data()
                 
+                # Update last success time
+                self.last_update_success_time = dt_util.utcnow()
+                
+                return data
+                
+        except IstaVdmAuthError as err:
+            # Auth failed - trigger re-authentication flow
+            _LOGGER.error(
+                "Authentication failed for %s during update: %s. Triggering re-authentication.",
+                self.entry.title,
+                err
+            )
+            self.entry.async_start_reauth(self.hass)
+            raise UpdateFailed(f"Authentication failed: {err}") from err
         except IstaVdmError as err:
             raise UpdateFailed(f"Error communicating with API: {err}") from err
 
@@ -79,7 +96,7 @@ async def async_setup_entry(
     """Set up ista VDM sensor based on a config entry."""
     api = entry.runtime_data
     
-    coordinator = IstaVdmDataUpdateCoordinator(hass, api)
+    coordinator = IstaVdmDataUpdateCoordinator(hass, api, entry)
     
     # Store coordinator in hass.data for access by other platforms
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
