@@ -107,6 +107,16 @@ class IstaVdmDataUpdateCoordinator(DataUpdateCoordinator[list[ConsumptionData]])
             _LOGGER.exception("Unexpected error updating data for %s: %s", self.entry.title, err)
             raise UpdateFailed(f"Unexpected error: {err}") from err
 
+    async def async_refresh_with_reauth(self) -> None:
+        """Force a refresh with full re-authentication."""
+        _LOGGER.info("Forcing full re-authentication for %s", self.entry.title)
+        # Force the API to re-authenticate by clearing tokens
+        self.api._access_token = None
+        self.api._refresh_token = None
+        self.api._token_expires = None
+        # Now trigger a normal refresh which will re-authenticate
+        await self.async_refresh()
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
