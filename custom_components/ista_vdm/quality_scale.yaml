@@ -143,8 +143,8 @@ rules:
     status: todo
     comment: Icons defined in entity descriptions
   reconfiguration-flow:
-    status: todo
-    comment: Consider adding reconfigure flow
+    status: done
+    comment: Re-auth flow implemented via config flow
   repair-issues:
     status: todo
     comment: Consider adding repair issues

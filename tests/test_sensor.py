@@ -1,12 +1,13 @@
 """Test the ista VDM sensor platform."""
 
-from datetime import date
+from datetime import date, datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfEnergy, UnitOfVolume
 from homeassistant.core import HomeAssistant
+from homeassistant.util import dt as dt_util
 from homeassistant.helpers.device_registry import DeviceRegistry
 from homeassistant.helpers.entity_registry import EntityRegistry
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -17,6 +18,7 @@ from custom_components.ista_vdm.sensor import (
     IstaVdmFlatCitySensor,
     IstaVdmHeatingSensor,
     IstaVdmHotWaterSensor,
+    IstaVdmLastUpdatedSensor,
 )
 
 
@@ -50,6 +52,7 @@ def mock_coordinator():
         "squaremeter": 56.9,
         "postalcode": "1010",
     }
+    coordinator.last_update_success_time = dt_util.utcnow()
     return coordinator
 
 
@@ -114,6 +117,25 @@ async def test_flat_city_sensor(hass: HomeAssistant, mock_coordinator, mock_entr
     
     assert sensor.name == "City"
     assert sensor.native_value == "Vienna"
+
+
+async def test_last_updated_sensor(hass: HomeAssistant, mock_coordinator, mock_entry, mock_device_info) -> None:
+    """Test last updated sensor."""
+    sensor = IstaVdmLastUpdatedSensor(mock_coordinator, mock_entry, mock_device_info)
+    
+    assert sensor.name == "Last Updated"
+    assert sensor.device_class == "timestamp"
+    assert sensor.native_value is not None
+    assert sensor.native_value == mock_coordinator.last_update_success_time
+
+
+async def test_last_updated_sensor_no_update_yet(hass: HomeAssistant, mock_entry, mock_device_info) -> None:
+    """Test last updated sensor when no update has occurred."""
+    coordinator = MagicMock()
+    coordinator.last_update_success_time = None
+    
+    sensor = IstaVdmLastUpdatedSensor(coordinator, mock_entry, mock_device_info)
+    assert sensor.native_value is None
 
 
 async def test_sensor_no_data(hass: HomeAssistant, mock_entry, mock_device_info) -> None:

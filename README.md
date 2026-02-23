@@ -14,6 +14,8 @@ ista VDM is a consumption data management system used by property management com
 - ✅ **Automatic Data Retrieval**: Fetches consumption data once per day
 - ✅ **Current & Historical Data**: Shows latest month + full history in attributes
 - ✅ **Device Information**: Displays address, square meters, and other flat details
+- ✅ **Manual Refresh Button**: Trigger immediate data update without waiting
+- ✅ **Last Updated Sensor**: See when data was last fetched
 - ✅ **Multi-Language Support**: English, German, French, Spanish
 - ✅ **Platinum Quality Scale**: Meets all Home Assistant quality standards
 - ✅ **Re-authentication Support**: Easy password updates via UI
@@ -126,6 +128,18 @@ These sensors provide static information about your flat and are marked as diagn
 Shows when the integration last successfully fetched data from ista VDM.
 - **Entity ID**: `sensor.ista_vdm_last_updated`
 - **Device Class**: Timestamp
+
+## Button
+
+### Refresh Data Button
+
+The integration includes a manual refresh button to trigger an immediate data update without waiting for the next scheduled update.
+
+- **Entity ID**: `button.ista_vdm_refresh_data`
+- **Icon**: mdi:refresh
+- **Function**: Forces a data refresh from ista VDM portal
+
+**Note**: Pressing this button will re-authenticate with the current stored credentials. If your password has changed, the integration will automatically prompt for re-authentication.
 
 ## Viewing Historical Data
 
